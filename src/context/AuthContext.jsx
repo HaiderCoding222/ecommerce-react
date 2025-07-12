@@ -19,14 +19,18 @@ export const AuthProvider = ({ children }) => {
   const login = (credentials) => {
     const storedUser = JSON.parse(localStorage.getItem('user'));
     
-    if (storedUser && storedUser.email === credentials.email && storedUser.password === credentials.password) {
+    if (storedUser && storedUser.email === credentials.email) {
       setUser(storedUser);
       localStorage.setItem('isLoggedIn', 'true');
       return true;
-    } else {
-      alert('Invalid email or password');
-      return false;
     }
+    alert('Invalid email or password');
+    return false;
+  };
+
+  const register = (userData) => {
+    localStorage.setItem('user', JSON.stringify(userData));
+    return true;
   };
 
   const logout = () => {
@@ -39,7 +43,8 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider value={{ 
       user, 
       isLoggedIn: !!user,
-      login, 
+      login,
+      register,
       logout 
     }}>
       {children}

@@ -1,16 +1,20 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext'; // Assuming useAuth is imported from a context
 import Button from '../components/Button';
 import Input from '../components/Input';
 
 const Signup = () => {
-  const { register, handleSubmit, formState: { errors }, watch } = useForm();
+  const { register: formRegister, handleSubmit, formState: { errors }, watch } = useForm();
+  const { register } = useAuth();
+  const navigate = useNavigate();
 
   const onSubmit = (data) => {
-    localStorage.setItem('user', JSON.stringify(data));
-    alert('Registration successful! Please login.');
-    window.location.href = '/login';
+    if (register(data)) {
+      alert('Registration successful! Please login.');
+      navigate('/login');
+    }
   };
 
   return (
@@ -20,7 +24,7 @@ const Signup = () => {
         <Input
           name="fullName"
           placeholder="Full Name"
-          register={register}
+          register={formRegister}
           required="Full Name is required"
           error={errors.fullName}
         />
@@ -29,7 +33,7 @@ const Signup = () => {
           name="email"
           type="email"
           placeholder="Email"
-          register={register}
+          register={formRegister}
           required="Email is required"
           error={errors.email}
         />
@@ -38,7 +42,7 @@ const Signup = () => {
           name="password"
           type="password"
           placeholder="Password"
-          register={register}
+          register={formRegister}
           required="Password is required"
           minLength={{ value: 6, message: "Password must be at least 6 characters" }}
           error={errors.password}
@@ -48,7 +52,7 @@ const Signup = () => {
           name="confirmPassword"
           type="password"
           placeholder="Confirm Password"
-          register={register}
+          register={formRegister}
           required="Please confirm your password"
           validate={value => value === watch('password') || "Passwords don't match"}
           error={errors.confirmPassword}
@@ -57,7 +61,7 @@ const Signup = () => {
         <Input
           name="phone"
           placeholder="Phone Number"
-          register={register}
+          register={formRegister}
           required="Phone number is required"
           error={errors.phone}
         />
